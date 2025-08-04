@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -27,8 +28,18 @@ export function Header() {
       <div className="flex items-center justify-between">
         {/* Logo/Brand */}
         <div className="flex-1">
-          <h1 className="text-xl font-bold">OrdX</h1>
+          <div className="flex items-center gap-3">
+            <Image
+              src="/logo.png"
+              alt="OrdX Logo"
+              width={32}
+              height={32}
+              className="w-8 h-8"
+            />
+            <h1 className="text-xl font-bold">OrdX</h1>
+          </div>
         </div>
+
 
         {/* Right Side Actions */}
         <div className="flex items-center gap-4">
@@ -53,14 +64,14 @@ export function Header() {
                 <div className="text-sm font-medium">{walletBalance}</div>
                 <div className="text-xs text-muted-foreground">{walletBalanceUSD}</div>
               </div>
-              
+
               {/* Wallet Address */}
               <Button variant="outline" size="sm" className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 {walletAddress}
                 <ChevronDown className="h-3 w-3" />
               </Button>
-              
+
               {/* User Menu */}
               <div className="relative group">
                 <Avatar className="h-8 w-8 cursor-pointer">
@@ -69,7 +80,7 @@ export function Header() {
                     <User className="h-4 w-4" />
                   </AvatarFallback>
                 </Avatar>
-                
+
                 {/* Dropdown Menu */}
                 <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                   <div className="p-2">
@@ -84,9 +95,9 @@ export function Header() {
                       <Settings className="h-4 w-4 mr-2" />
                       Settings
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="w-full justify-start text-red-500 hover:text-red-600"
                       onClick={handleDisconnectWallet}
                     >
