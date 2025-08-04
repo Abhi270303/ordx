@@ -208,7 +208,8 @@ export function ProfileDashboard() {
                 </Card>
               </TabsContent>
             </Tabs>
-            
+            </div>
+
             <TrendingSidebar />
           </div>
           

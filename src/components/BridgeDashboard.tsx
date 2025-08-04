@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   ArrowLeftRight, 
   Bitcoin, 
-  Ethereum,
+  CircleDollarSign,
   Wallet,
   Settings,
   Clock
@@ -97,7 +97,7 @@ export function BridgeDashboard() {
                           <Input placeholder="0.0" />
                         </div>
                         <Button variant="outline" className="flex items-center gap-2">
-                          <Ethereum className="h-4 w-4" />
+                          <CircleDollarSign className="h-4 w-4" />
                           ETH
                         </Button>
                       </div>
@@ -181,7 +181,9 @@ export function BridgeDashboard() {
                 </Card>
               </div>
             </div>
+            </div>
             
+                        
             <TrendingSidebar />
           </div>
           

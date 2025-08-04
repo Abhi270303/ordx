@@ -181,6 +181,7 @@ export function WatchlistDashboard() {
                 </div>
               </TabsContent>
             </Tabs>
+            </div>
             
             <TrendingSidebar />
           </div>

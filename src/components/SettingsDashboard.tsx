@@ -200,6 +200,7 @@ export function SettingsDashboard() {
                 </Card>
               </TabsContent>
             </Tabs>
+            </div>
             
             <TrendingSidebar />
           </div>

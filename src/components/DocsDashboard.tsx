@@ -141,6 +141,7 @@ export function DocsDashboard() {
                 </div>
               </TabsContent>
             </Tabs>
+            </div>
             
             <TrendingSidebar />
           </div>

@@ -146,6 +146,7 @@ export function PortfolioDashboard() {
                 </div>
               </TabsContent>
             </Tabs>
+            </div>
             
             <TrendingSidebar />
           </div>
