@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NFT Marketplace Dashboard",
-  description: "A modern NFT marketplace dashboard built with Next.js and shadcn/ui",
+  title: "Ordx",
+  description: "Bitcoin Ordinals and Starknet NFTs marketplace",
 };
 
 export default function RootLayout({
