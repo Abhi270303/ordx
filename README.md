@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OrdX NFT Marketplace
 
-## Getting Started
+A modern NFT marketplace built with Next.js, supporting both StarkNet NFTs and Bitcoin Ordinals.
 
-First, run the development server:
+## Features
+
+- **Wallet Integration**: StarknetKit with ArgentX and Braavos support
+- **Hover-Expandable Sidebar**: Similar to OpenSea's design
+- **Create Collections**: Smart contract integration for NFT creation
+- **Responsive Design**: Works on all devices
+- **Dark Theme**: Modern dark mode interface
+
+## Tech Stack
+
+- **Framework**: Next.js 15.4.5
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Radix UI
+- **Wallet**: StarknetKit + starknet-react
+- **Deployment**: Vercel
+
+## Development
+
+### Prerequisites
+
+- Node.js 20+
+- npm or yarn
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd nft-marketplace
+
+# Install dependencies
+npm install --legacy-peer-deps
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Build for production
+npm run build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Start production server
+npm start
+```
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+### Vercel Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This project is configured for Vercel deployment with the following settings:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Node.js Version**: 20 (specified in `.nvmrc`)
+- **Legacy Peer Deps**: Enabled via `.npmrc`
+- **Build Command**: `npm run vercel-build`
+- **Install Command**: `npm install --legacy-peer-deps`
 
-## Deploy on Vercel
+### Configuration Files
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `.npmrc`: Enables legacy peer deps for React version compatibility
+- `.nvmrc`: Specifies Node.js version 20
+- `vercel.json`: Vercel deployment configuration
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Deployment Steps
+
+1. Connect your GitHub repository to Vercel
+2. Vercel will automatically detect the Next.js framework
+3. The build will use the custom `vercel-build` script
+4. Dependencies will be installed with `--legacy-peer-deps`
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── layout.tsx         # Root layout with StarknetProvider
+│   ├── page.tsx           # Main explore page
+│   └── [routes]/          # Other pages (collections, profile, etc.)
+├── components/            # React components
+│   ├── ui/               # Reusable UI components
+│   ├── Header.tsx        # Top navigation
+│   ├── Sidebar.tsx       # Hover-expandable sidebar
+│   └── [pages]/          # Page-specific components
+├── hooks/                # Custom React hooks
+│   └── useWalletConnector.tsx
+└── lib/                  # Utility functions
+    └── utils.ts
+```
+
+## Wallet Integration
+
+The project uses StarknetKit for wallet connection:
+
+- **Supported Wallets**: ArgentX, Braavos
+- **Features**: Connection persistence, balance display, transaction signing
+- **Provider**: StarknetProvider wraps the entire app
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test locally with `npm run dev`
+5. Submit a pull request
+
+## License
+
+MIT License
