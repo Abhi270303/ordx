@@ -6,7 +6,6 @@ import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { TrendingSidebar } from "./TrendingSidebar";
 import { Footer } from "./Footer";
-import { CreateCollectionModal } from "./CreateCollectionModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -52,12 +51,10 @@ const filters = ["All", "Created", "Purchased"];
 export function CollectionsDashboard() {
   const { isConnected } = useWalletConnector();
   const router = useRouter();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All");
 
-  const handleCreateSuccess = () => {
-    // Here you would refresh the user's collections
-    console.log("Collection created successfully!");
+  const handleCreateCollection = () => {
+    router.push('/create-collection');
   };
 
   const handleBrowseMarketplace = () => {
@@ -86,7 +83,7 @@ export function CollectionsDashboard() {
                 <p className="text-muted-foreground">Manage your created and purchased NFT collections</p>
               </div>
               <Button 
-                onClick={() => setIsCreateModalOpen(true)}
+                onClick={handleCreateCollection}
                 disabled={!isConnected}
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -173,7 +170,7 @@ export function CollectionsDashboard() {
                       
                       <div className="flex gap-3">
                         <Button 
-                          onClick={() => setIsCreateModalOpen(true)}
+                          onClick={handleCreateCollection}
                           className="flex-1"
                         >
                           <Plus className="h-4 w-4 mr-2" />
@@ -271,13 +268,6 @@ export function CollectionsDashboard() {
           <Footer />
         </div>
       </div>
-
-      {/* Create Collection Modal */}
-      <CreateCollectionModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSuccess={handleCreateSuccess}
-      />
     </div>
   );
 } 

@@ -8,6 +8,7 @@ import { CheckCircle, TrendingUp, Search, Filter, Mic, ChevronDown, Heart, Eye, 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { FilterSidebar } from "./FilterSidebar";
+import Image from 'next/image';
 
 // Section types
 type Section = "starknet" | "bitcoin";
@@ -103,7 +104,7 @@ export function MainContent() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+              <Image src="/starknet.svg" alt="StarkNet" width={16} height={16} className="w-4 h-4" />
               StarkNet NFTs
             </Button>
             <Button
@@ -117,7 +118,7 @@ export function MainContent() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+              <Image src="/bitcoin.svg" alt="Bitcoin" width={16} height={16} className="w-4 h-4" />
               Bitcoin Ordinals
             </Button>
           </div>

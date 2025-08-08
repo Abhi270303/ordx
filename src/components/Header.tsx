@@ -44,7 +44,7 @@ export function Header() {
         <div className="flex items-center gap-4">
           {/* Network Indicator */}
           <div className="flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-lg">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <Image src="/starknet.svg" alt="StarkNet" width={16} height={16} className="w-4 h-4" />
             <span className="text-sm font-medium">StarkNet</span>
             <Badge variant="secondary" className="text-xs">Mainnet</Badge>
           </div>
@@ -60,7 +60,7 @@ export function Header() {
             <div className="flex items-center gap-3">
               {/* Wallet Address */}
               <Button variant="outline" size="sm" className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <Image src="/starknet.svg" alt="StarkNet" width={16} height={16} className="w-4 h-4" />
                 {formatAddress}
                 <ChevronDown className="h-3 w-3" />
               </Button>
