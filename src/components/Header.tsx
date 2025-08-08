@@ -5,23 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useWalletConnector } from '@/hooks/useWalletConnector';
 
 export function Header() {
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
-  const [walletAddress] = useState("0x1234...5678");
-  const [walletBalance] = useState("2.45 ETH");
-  const [walletBalanceUSD] = useState("$7,234.56");
-
-  const handleConnectWallet = () => {
-    setIsWalletConnected(true);
-  };
-
-  const handleDisconnectWallet = () => {
-    setIsWalletConnected(false);
-  };
+  const { address, isConnected, connectWallet, disconnect, formatAddress } = useWalletConnector();
 
   return (
     <header className="border-b border-border bg-card px-6 py-4">
@@ -57,18 +46,12 @@ export function Header() {
           </Button>
 
           {/* Wallet Connection */}
-          {isWalletConnected ? (
+          {isConnected ? (
             <div className="flex items-center gap-3">
-              {/* Wallet Info */}
-              <div className="text-right">
-                <div className="text-sm font-medium">{walletBalance}</div>
-                <div className="text-xs text-muted-foreground">{walletBalanceUSD}</div>
-              </div>
-
               {/* Wallet Address */}
               <Button variant="outline" size="sm" className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                {walletAddress}
+                {formatAddress}
                 <ChevronDown className="h-3 w-3" />
               </Button>
 
@@ -85,7 +68,7 @@ export function Header() {
                 <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                   <div className="p-2">
                     <div className="px-3 py-2 text-sm font-medium border-b border-border mb-2">
-                      {walletAddress}
+                      {formatAddress}
                     </div>
                     <Button variant="ghost" size="sm" className="w-full justify-start">
                       <User className="h-4 w-4 mr-2" />
@@ -99,7 +82,7 @@ export function Header() {
                       variant="ghost"
                       size="sm"
                       className="w-full justify-start text-red-500 hover:text-red-600"
-                      onClick={handleDisconnectWallet}
+                      onClick={() => disconnect()}
                     >
                       <LogOut className="h-4 w-4 mr-2" />
                       Disconnect
@@ -109,7 +92,7 @@ export function Header() {
               </div>
             </div>
           ) : (
-            <Button onClick={handleConnectWallet} className="flex items-center gap-2">
+            <Button onClick={connectWallet} className="flex items-center gap-2">
               <Wallet className="h-4 w-4" />
               Connect Wallet
             </Button>

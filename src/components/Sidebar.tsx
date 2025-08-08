@@ -34,7 +34,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-16 bg-card border-r border-border flex flex-col items-center py-4">
+    <aside className="w-16 bg-card border-r border-border flex flex-col items-center py-4 flex-shrink-0">
       <div className="flex flex-col items-center gap-6">
         {navItems.map((item, index) => {
           const isActive = pathname === item.path;
@@ -43,12 +43,12 @@ export function Sidebar() {
               key={index}
               onClick={() => router.push(item.path)}
               className={cn(
-                "p-3 rounded-lg transition-colors hover:bg-muted",
-                isActive && "bg-primary text-primary-foreground"
+                "w-8 h-8 sm:w-10 sm:h-10 p-2 rounded-lg transition-colors hover:bg-muted flex items-center justify-center flex-shrink-0",
+                isActive && "bg-background text-foreground shadow-sm ring-1 ring-border/50"
               )}
               title={item.label}
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
           );
         })}

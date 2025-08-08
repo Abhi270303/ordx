@@ -25,7 +25,6 @@ const starknetCategories: Category[] = [
   { name: "Art", count: 456, icon: TrendingUp },
   { name: "PFPs", count: 189, icon: TrendingUp },
   { name: "Music", count: 67, icon: TrendingUp },
-  { name: "Virtual Worlds", count: 89, icon: TrendingUp },
   { name: "Trading Cards", count: 123, icon: TrendingUp },
 ];
 
@@ -88,7 +87,7 @@ export function MainContent() {
     : "Search Bitcoin Ordinals, Inscriptions, or creators...";
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 pt-4">
+    <div className="flex-1 overflow-y-auto p-6 pt-4 max-w-6xl">
       {/* Section Toggle */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
