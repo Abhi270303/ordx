@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from 'next/navigation';
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { TrendingSidebar } from "./TrendingSidebar";
 import { Footer } from "./Footer";
+import { CreateCollectionModal } from "./CreateCollectionModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,87 +23,47 @@ import {
   Users,
   Eye,
   Heart,
-  MoreHorizontal
+  MoreHorizontal,
+  Package,
+  ShoppingCart
 } from "lucide-react";
+import { useWalletConnector } from '@/hooks/useWalletConnector';
 
-const collections = [
-  {
-    id: 1,
-    name: "Ordinal Punks",
-    creator: "Ordinal Labs",
-    floorPrice: "0.15 BTC",
-    totalVolume: "1,234.5 BTC",
-    items: "10,000",
-    owners: "8,500",
-    verified: true,
-    image: "/placeholder-collection-1.jpg",
-    change: "+12.5%"
-  },
-  {
-    id: 2,
-    name: "Bitcoin Frogs",
-    creator: "FrogDAO",
-    floorPrice: "0.08 BTC",
-    totalVolume: "567.8 BTC",
-    items: "5,000",
-    owners: "4,200",
-    verified: true,
-    image: "/placeholder-collection-2.jpg",
-    change: "+8.3%"
-  },
-  {
-    id: 3,
-    name: "Taproot Wizards",
-    creator: "Wizard Labs",
-    floorPrice: "0.25 BTC",
-    totalVolume: "2,345.6 BTC",
-    items: "2,000",
-    owners: "1,800",
-    verified: true,
-    image: "/placeholder-collection-3.jpg",
-    change: "+15.7%"
-  },
-  {
-    id: 4,
-    name: "Ordinal Loops",
-    creator: "Loop Studio",
-    floorPrice: "0.05 BTC",
-    totalVolume: "234.1 BTC",
-    items: "15,000",
-    owners: "12,000",
-    verified: false,
-    image: "/placeholder-collection-4.jpg",
-    change: "+5.2%"
-  },
-  {
-    id: 5,
-    name: "Bitcoin Birds",
-    creator: "Bird Collective",
-    floorPrice: "0.12 BTC",
-    totalVolume: "789.3 BTC",
-    items: "8,000",
-    owners: "6,500",
-    verified: true,
-    image: "/placeholder-collection-5.jpg",
-    change: "+9.8%"
-  },
-  {
-    id: 6,
-    name: "Ordinal Cats",
-    creator: "CatDAO",
-    floorPrice: "0.18 BTC",
-    totalVolume: "1,567.9 BTC",
-    items: "12,000",
-    owners: "10,200",
-    verified: true,
-    image: "/placeholder-collection-6.jpg",
-    change: "+11.4%"
-  }
+interface Collection {
+  id: number;
+  name: string;
+  creator: string;
+  floorPrice: string;
+  totalVolume: string;
+  items: string;
+  owners: string;
+  verified: boolean;
+  image: string;
+  change: string;
+}
+
+// User's collections (created or purchased)
+const userCollections: Collection[] = [
+  // This will be empty initially - user has no collections yet
 ];
 
-const filters = ["All", "Verified", "Trending", "New", "Popular"];
+const filters = ["All", "Created", "Purchased"];
 
 export function CollectionsDashboard() {
+  const { isConnected } = useWalletConnector();
+  const router = useRouter();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  const handleCreateSuccess = () => {
+    // Here you would refresh the user's collections
+    console.log("Collection created successfully!");
+  };
+
+  const handleBrowseMarketplace = () => {
+    router.push('/');
+  };
+
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Header - spans full width at top */}
@@ -119,10 +82,13 @@ export function CollectionsDashboard() {
             {/* Page Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h1 className="text-3xl font-bold">Collections</h1>
-                <p className="text-muted-foreground">Browse and manage NFT collections</p>
+                <h1 className="text-3xl font-bold">My Collections</h1>
+                <p className="text-muted-foreground">Manage your created and purchased NFT collections</p>
               </div>
-              <Button>
+              <Button 
+                onClick={() => setIsCreateModalOpen(true)}
+                disabled={!isConnected}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Create Collection
               </Button>
@@ -134,98 +100,169 @@ export function CollectionsDashboard() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
-                    placeholder="Search collections..."
+                    placeholder="Search your collections..."
                     className="pl-10"
                   />
                 </div>
               </div>
               <div className="flex gap-2">
-                {filters.map((filter, index) => (
+                {filters.map((filter) => (
                   <Button
-                    key={index}
-                    variant={filter === "All" ? "default" : "outline"}
+                    key={filter}
+                    variant={filter === activeFilter ? "default" : "outline"}
                     size="sm"
+                    onClick={() => setActiveFilter(filter)}
                   >
                     {filter}
                   </Button>
                 ))}
               </div>
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
-                More Filters
-              </Button>
             </div>
 
             {/* Collections Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {collections.map((collection) => (
-                <Card key={collection.id} className="cursor-pointer hover:shadow-lg transition-shadow">
-                  <CardContent className="p-0">
-                    <div className="aspect-video bg-gradient-to-br from-blue-400 to-purple-500 rounded-t-lg flex items-center justify-center text-white font-bold text-lg">
-                      {collection.name}
+            {userCollections.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="max-w-md mx-auto space-y-6">
+                  <div className="flex justify-center">
+                    <div className="w-24 h-24 bg-muted/50 rounded-full flex items-center justify-center">
+                      <Package className="h-12 w-12 text-muted-foreground" />
                     </div>
-                    <div className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold">{collection.name}</h3>
-                          {collection.verified && (
-                            <Badge variant="secondary" className="text-blue-500">
-                              Verified
-                            </Badge>
-                          )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-semibold">No Collections Yet</h3>
+                    <p className="text-muted-foreground">
+                      {!isConnected 
+                        ? "Connect your wallet to start creating NFT collections"
+                        : "You haven't created or purchased any NFT collections yet"
+                      }
+                    </p>
+                  </div>
+
+                  {!isConnected ? (
+                    <div className="space-y-4">
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <h4 className="font-semibold mb-2">Get Started</h4>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Connect your wallet to create and manage your NFT collections
+                        </p>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span>Connect wallet to create collections</span>
                         </div>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="h-4 w-4" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <h4 className="font-semibold mb-2">Create Your First Collection</h4>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Start by creating your own NFT collection or browse the marketplace to purchase existing collections
+                        </p>
+                        <div className="space-y-2 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-2">
+                            <Plus className="h-4 w-4" />
+                            <span>Create a new collection</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <ShoppingCart className="h-4 w-4" />
+                            <span>Purchase from marketplace</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <Button 
+                          onClick={() => setIsCreateModalOpen(true)}
+                          className="flex-1"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Create Collection
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={handleBrowseMarketplace}
+                        >
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Browse Marketplace
                         </Button>
                       </div>
-                      
-                      <div className="flex items-center gap-2 mb-4">
-                        <Avatar className="h-6 w-6">
-                          <AvatarFallback className="text-xs">
-                            {collection.creator.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm text-muted-foreground">{collection.creator}</span>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-                        <div>
-                          <div className="text-muted-foreground">Floor Price</div>
-                          <div className="font-semibold">{collection.floorPrice}</div>
-                        </div>
-                        <div>
-                          <div className="text-muted-foreground">Total Volume</div>
-                          <div className="font-semibold">{collection.totalVolume}</div>
-                        </div>
-                        <div>
-                          <div className="text-muted-foreground">Items</div>
-                          <div className="font-semibold">{collection.items}</div>
-                        </div>
-                        <div>
-                          <div className="text-muted-foreground">Owners</div>
-                          <div className="font-semibold">{collection.owners}</div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <Badge variant="secondary" className="text-green-500">
-                          <TrendingUp className="h-3 w-3 mr-1" />
-                          {collection.change}
-                        </Badge>
-                        <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <Heart className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {userCollections.map((collection) => (
+                  <Card key={collection.id} className="cursor-pointer hover:shadow-lg transition-shadow">
+                    <CardContent className="p-0">
+                      <div className="aspect-video bg-gradient-to-br from-blue-400 to-purple-500 rounded-t-lg flex items-center justify-center text-white font-bold text-lg">
+                        {collection.name}
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold">{collection.name}</h3>
+                            {collection.verified && (
+                              <Badge variant="secondary" className="text-blue-500">
+                                Verified
+                              </Badge>
+                            )}
+                          </div>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 mb-4">
+                          <Avatar className="h-6 w-6">
+                            <AvatarFallback className="text-xs">
+                              {collection.creator.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-sm text-muted-foreground">{collection.creator}</span>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                          <div>
+                            <div className="text-muted-foreground">Floor Price</div>
+                            <div className="font-semibold">{collection.floorPrice}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Total Volume</div>
+                            <div className="font-semibold">{collection.totalVolume}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Items</div>
+                            <div className="font-semibold">{collection.items}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Owners</div>
+                            <div className="font-semibold">{collection.owners}</div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <Badge variant="secondary" className="text-green-500">
+                            <TrendingUp className="h-3 w-3 mr-1" />
+                            {collection.change}
+                          </Badge>
+                          <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <Heart className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
             </div>
             
             <TrendingSidebar />
@@ -234,6 +271,13 @@ export function CollectionsDashboard() {
           <Footer />
         </div>
       </div>
+
+      {/* Create Collection Modal */}
+      <CreateCollectionModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={handleCreateSuccess}
+      />
     </div>
   );
 } 

@@ -8,9 +8,19 @@ import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useWalletConnector } from '@/hooks/useWalletConnector';
+import { useRouter } from 'next/navigation';
 
 export function Header() {
   const { address, isConnected, connectWallet, disconnect, formatAddress } = useWalletConnector();
+  const router = useRouter();
+
+  const handleProfileClick = () => {
+    router.push('/profile');
+  };
+
+  const handleSettingsClick = () => {
+    router.push('/settings');
+  };
 
   return (
     <header className="border-b border-border bg-card px-6 py-4">
@@ -70,11 +80,21 @@ export function Header() {
                     <div className="px-3 py-2 text-sm font-medium border-b border-border mb-2">
                       {formatAddress}
                     </div>
-                    <Button variant="ghost" size="sm" className="w-full justify-start">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start"
+                      onClick={handleProfileClick}
+                    >
                       <User className="h-4 w-4 mr-2" />
                       Profile
                     </Button>
-                    <Button variant="ghost" size="sm" className="w-full justify-start">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start"
+                      onClick={handleSettingsClick}
+                    >
                       <Settings className="h-4 w-4 mr-2" />
                       Settings
                     </Button>
