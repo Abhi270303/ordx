@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
-import { TrendingSidebar } from "./TrendingSidebar";
 import { Footer } from "./Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,7 +53,7 @@ export function CollectionsDashboard() {
   const [activeFilter, setActiveFilter] = useState("All");
 
   const handleCreateCollection = () => {
-    router.push('/create-collection');
+    router.push('/studio');
   };
 
   const handleBrowseMarketplace = () => {
@@ -74,8 +73,7 @@ export function CollectionsDashboard() {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col">
           {/* Main Content */}
-          <div className="flex-1 flex overflow-hidden">
-            <div className="flex-1 overflow-y-auto p-6 pt-4">
+          <div className="flex-1 overflow-y-auto p-6 pt-4">
             {/* Page Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
@@ -240,19 +238,15 @@ export function CollectionsDashboard() {
                           </div>
                         </div>
                         
-                        <div className="flex items-center justify-between">
-                          <Badge variant="secondary" className="text-green-500">
-                            <TrendingUp className="h-3 w-3 mr-1" />
-                            {collection.change}
-                          </Badge>
-                          <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <Heart className="h-4 w-4" />
-                            </Button>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm" className="flex-1">
+                            <Eye className="h-4 w-4 mr-2" />
+                            View
+                          </Button>
+                          <Button variant="outline" size="sm" className="flex-1">
+                            <Heart className="h-4 w-4 mr-2" />
+                            Like
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
@@ -260,9 +254,6 @@ export function CollectionsDashboard() {
                 ))}
               </div>
             )}
-            </div>
-            
-            <TrendingSidebar />
           </div>
           
           <Footer />

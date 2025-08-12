@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { Header } from "./Header"
 import { Sidebar } from "./Sidebar"
@@ -19,7 +19,15 @@ import {
   Rocket,
   Info,
   Diamond,
-  ChevronUp
+  ChevronUp,
+  Calendar,
+  Zap,
+  Code,
+  Eye,
+  Lock,
+  Link,
+  ImageIcon,
+  RefreshCw
 } from "lucide-react"
 import { useWalletConnector } from '@/hooks/useWalletConnector'
 
@@ -48,6 +56,9 @@ const chainOptions = [
 
 export function CreateCollectionPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const contractType = searchParams.get('type') || 'drop'
+  
   const { address, isConnected } = useWalletConnector()
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -66,12 +77,44 @@ export function CreateCollectionPage() {
     website: '',
     twitter: '',
     discord: '',
-    github: ''
+    github: '',
+    // Drop-specific fields
+    launchDate: '',
+    revealDate: '',
+    gatedAccess: false,
+    // Collection-specific fields
+    isOpenEnded: true,
+    canAddItems: true
   })
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const selectedChain = chainOptions.find(chain => chain.id === formData.chain) || chainOptions[0]
+  
+  // Contract type configurations
+  const isDrop = contractType === 'drop'
+  const contractConfig = {
+    drop: {
+      title: 'Start with your Drop Contract',
+      subtitle: 'Every Drop lives on its own smart contract. We\'ll deploy one for you now — it powers your mint, schedule, and reveal settings.',
+      contractType: 'ERC-721',
+      icon: <Calendar className="h-6 w-6 text-purple-500" />,
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-500/10',
+      borderColor: 'border-purple-500/20'
+    },
+    collection: {
+      title: 'Create your Open Collection',
+      subtitle: 'Open collections allow you to add new items anytime. Perfect for ongoing series and evolving creative works.',
+      contractType: 'ERC-1155',
+      icon: <Zap className="h-6 w-6 text-orange-500" />,
+      color: 'text-orange-500',
+      bgColor: 'bg-orange-500/10',
+      borderColor: 'border-orange-500/20'
+    }
+  }
+
+  const currentConfig = contractConfig[contractType as keyof typeof contractConfig] || contractConfig.drop
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -149,8 +192,12 @@ export function CreateCollectionPage() {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center space-y-4">
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
-              <h2 className="text-2xl font-bold">Collection Created Successfully!</h2>
-              <p className="text-muted-foreground">Your NFT collection has been deployed to the blockchain.</p>
+              <h2 className="text-2xl font-bold">
+                {isDrop ? 'Drop Contract' : 'Open Collection'} Created Successfully!
+              </h2>
+              <p className="text-muted-foreground">
+                Your {isDrop ? 'NFT drop contract' : 'open collection'} has been deployed to the blockchain.
+              </p>
               <Button onClick={() => router.push('/collections')}>
                 View My Collections
               </Button>
@@ -181,7 +228,9 @@ export function CreateCollectionPage() {
               </Button>
               <span className="text-sm text-muted-foreground">Create Collection</span>
               <span className="text-sm text-muted-foreground">/</span>
-              <span className="text-sm font-medium">Deploy Smart Contract</span>
+              <span className="text-sm font-medium">
+                {isDrop ? 'Scheduled Drop' : 'Open Collection'} ({currentConfig.contractType})
+              </span>
             </div>
           </div>
 
@@ -197,9 +246,11 @@ export function CreateCollectionPage() {
                     onClick={() => fileInputRef.current?.click()}
                   >
                     {previewUrl ? (
-                      <img 
+                      <Image 
                         src={previewUrl} 
                         alt="Preview" 
+                        width={400}
+                        height={400}
                         className="w-full h-full object-cover rounded-lg"
                       />
                     ) : (
@@ -228,8 +279,8 @@ export function CreateCollectionPage() {
                     <Diamond className="h-3 w-3" />
                     {selectedChain.badge}
                   </Badge>
-                  <Badge variant="secondary">
-                    {selectedChain.id === 'starknet' ? 'ERC721' : 'ORDINAL'}
+                  <Badge variant="secondary" className={`${currentConfig.bgColor} ${currentConfig.borderColor} ${currentConfig.color}`}>
+                    {currentConfig.contractType}
                   </Badge>
                 </div>
               </div>
@@ -241,11 +292,11 @@ export function CreateCollectionPage() {
                 {/* Header */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Rocket className="h-6 w-6 text-primary" />
-                    <h1 className="text-2xl font-bold">Start with your Drop Contract</h1>
+                    {currentConfig.icon}
+                    <h1 className="text-2xl font-bold">{currentConfig.title}</h1>
                   </div>
                   <p className="text-muted-foreground">
-                    Every Drop lives on its own smart contract. We'll deploy one for you now — it powers your mint, schedule, and reveal settings.
+                    {currentConfig.subtitle}
                   </p>
                 </div>
 
@@ -367,6 +418,99 @@ export function CreateCollectionPage() {
                     />
                   </div>
 
+                  {/* Contract-Specific Fields */}
+                  {isDrop ? (
+                    /* Drop-Specific Fields (ERC-721) */
+                    <div className={`${currentConfig.bgColor} ${currentConfig.borderColor} border rounded-lg p-4 space-y-4`}>
+                      <div className="flex items-center gap-2">
+                        <Calendar className={`h-5 w-5 ${currentConfig.color}`} />
+                        <h3 className="font-semibold">Drop Settings</h3>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="launchDate">Launch Date</Label>
+                          <Input
+                            id="launchDate"
+                            type="datetime-local"
+                            value={formData.launchDate}
+                            onChange={(e) => handleInputChange('launchDate', e.target.value)}
+                            placeholder="Select launch date"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="revealDate">Reveal Date</Label>
+                          <Input
+                            id="revealDate"
+                            type="datetime-local"
+                            value={formData.revealDate}
+                            onChange={(e) => handleInputChange('revealDate', e.target.value)}
+                            placeholder="Select reveal date"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="gatedAccess">Gated Access</Label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            id="gatedAccess"
+                            checked={formData.gatedAccess}
+                            onChange={(e) => handleInputChange('gatedAccess', e.target.checked.toString())}
+                            className="rounded border-gray-300"
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            Enable access control for minting
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Collection-Specific Fields (ERC-1155) */
+                    <div className={`${currentConfig.bgColor} ${currentConfig.borderColor} border rounded-lg p-4 space-y-4`}>
+                      <div className="flex items-center gap-2">
+                        <Zap className={`h-5 w-5 ${currentConfig.color}`} />
+                        <h3 className="font-semibold">Collection Settings</h3>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="isOpenEnded">Open-Ended Collection</Label>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              id="isOpenEnded"
+                              checked={formData.isOpenEnded}
+                              onChange={(e) => handleInputChange('isOpenEnded', e.target.checked.toString())}
+                              className="rounded border-gray-300"
+                            />
+                            <span className="text-sm text-muted-foreground">
+                              Allow unlimited items to be added over time
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="canAddItems">Can Add Items</Label>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              id="canAddItems"
+                              checked={formData.canAddItems}
+                              onChange={(e) => handleInputChange('canAddItems', e.target.checked.toString())}
+                              className="rounded border-gray-300"
+                            />
+                            <span className="text-sm text-muted-foreground">
+                              Allow new items to be added after deployment
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Wallet Connection Status */}
                   {!isConnected && (
                     <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
@@ -392,10 +536,10 @@ export function CreateCollectionPage() {
                       {isLoading ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Publishing Contract...
+                          Publishing {isDrop ? 'Drop Contract' : 'Collection'}...
                         </>
                       ) : (
-                        'Publish Contract'
+                        `Publish ${isDrop ? 'Drop Contract' : 'Collection'}`
                       )}
                     </Button>
                   </div>

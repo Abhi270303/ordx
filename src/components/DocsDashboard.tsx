@@ -2,7 +2,6 @@
 
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
-import { TrendingSidebar } from "./TrendingSidebar";
 import { Footer } from "./Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,103 +46,139 @@ export function DocsDashboard() {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col">
           {/* Main Content */}
-          <div className="flex-1 flex overflow-hidden">
-            <div className="flex-1 overflow-y-auto p-6 pt-4">
+          <div className="flex-1 overflow-y-auto p-6 pt-4">
             {/* Page Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h1 className="text-3xl font-bold">Documentation</h1>
-                <p className="text-muted-foreground">Learn how to use OrdX platform</p>
+                <p className="text-muted-foreground">Learn how to use OrdX and integrate with our platform</p>
               </div>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Download PDF
-              </Button>
-            </div>
-
-            {/* Search */}
-            <div className="max-w-md mb-8">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder="Search documentation..."
-                  className="pl-10"
-                />
+              <div className="flex items-center gap-3">
+                <Button variant="outline" size="sm">
+                  <Search className="h-4 w-4 mr-2" />
+                  Search Docs
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download PDF
+                </Button>
               </div>
             </div>
 
-            <Tabs defaultValue="overview" className="space-y-6">
-              <TabsList>
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="guides">Guides</TabsTrigger>
-                <TabsTrigger value="api">API Reference</TabsTrigger>
-              </TabsList>
+            {/* Documentation Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+              {/* Sidebar Navigation */}
+              <div className="lg:col-span-1">
+                <Card>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold mb-4">Quick Navigation</h3>
+                    <nav className="space-y-2">
+                      <a href="#getting-started" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        Getting Started
+                      </a>
+                      <a href="#api-reference" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        API Reference
+                      </a>
+                      <a href="#smart-contracts" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        Smart Contracts
+                      </a>
+                      <a href="#tutorials" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        Tutorials
+                      </a>
+                      <a href="#faq" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        FAQ
+                      </a>
+                    </nav>
+                  </CardContent>
+                </Card>
+              </div>
 
-              <TabsContent value="overview" className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {categories.map((category, index) => (
-                    <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                          <div className="p-3 rounded-full bg-blue-500/10">
-                            <category.icon className="h-6 w-6 text-blue-500" />
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold">{category.name}</h3>
-                            <p className="text-sm text-muted-foreground">{category.count} articles</p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-
+              {/* Main Content */}
+              <div className="lg:col-span-3 space-y-8">
+                {/* Getting Started */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Popular Articles</CardTitle>
+                    <CardTitle id="getting-started">Getting Started</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-4">
+                    <p className="text-muted-foreground">
+                      Welcome to OrdX! This guide will help you get started with our NFT marketplace platform.
+                    </p>
+                    
                     <div className="space-y-4">
-                      {popularArticles.map((article, index) => (
-                        <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-                          <div>
-                            <h4 className="font-medium">{article.title}</h4>
-                            <div className="flex items-center gap-2 mt-1">
-                              <Badge variant="secondary" className="text-xs">
-                                {article.category}
-                              </Badge>
-                              <span className="text-sm text-muted-foreground">{article.readTime}</span>
-                            </div>
-                          </div>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <ExternalLink className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
+                      <h4 className="font-semibold">1. Connect Your Wallet</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Start by connecting your StarkNet wallet (ArgentX, Braavos) to access the platform.
+                      </p>
+                      
+                      <h4 className="font-semibold">2. Explore Collections</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Browse through thousands of NFT collections on StarkNet and Bitcoin networks.
+                      </p>
+                      
+                      <h4 className="font-semibold">3. Create or Purchase</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Create your own NFT collections or purchase existing ones from the marketplace.
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
-              </TabsContent>
 
-              <TabsContent value="guides" className="space-y-6">
-                <div className="text-center py-12">
-                  <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Step-by-Step Guides</h3>
-                  <p className="text-muted-foreground">Detailed tutorials and walkthroughs</p>
-                </div>
-              </TabsContent>
+                {/* API Reference */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle id="api-reference">API Reference</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-muted-foreground">
+                      Integrate with OrdX using our comprehensive REST API and SDK.
+                    </p>
+                    
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <h4 className="font-semibold mb-2">Base URL</h4>
+                      <code className="text-sm bg-background px-2 py-1 rounded">
+                        https://api.ordx.com/v1
+                      </code>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <h4 className="font-semibold">Authentication</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Use your API key in the Authorization header: <code className="bg-muted px-1 rounded">Bearer YOUR_API_KEY</code>
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
 
-              <TabsContent value="api" className="space-y-6">
-                <div className="text-center py-12">
-                  <HelpCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">API Documentation</h3>
-                  <p className="text-muted-foreground">Complete API reference and examples</p>
-                </div>
-              </TabsContent>
-            </Tabs>
+                {/* Smart Contracts */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle id="smart-contracts">Smart Contracts</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-muted-foreground">
+                      Learn about the smart contracts that power OrdX and how to interact with them.
+                    </p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <h4 className="font-semibold mb-2">StarkNet Contracts</h4>
+                        <p className="text-sm text-muted-foreground">
+                          ERC-721 and ERC-1155 contracts deployed on StarkNet mainnet.
+                        </p>
+                      </div>
+                      
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <h4 className="font-semibold mb-2">Bitcoin Ordinals</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Native Bitcoin Ordinals support with inscription management.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
-            
-            <TrendingSidebar />
           </div>
           
           <Footer />

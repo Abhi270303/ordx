@@ -2,7 +2,6 @@
 
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
-import { TrendingSidebar } from "./TrendingSidebar";
 import { Footer } from "./Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +15,11 @@ import {
   DollarSign,
   Filter,
   Download,
-  Eye
+  Eye,
+  ShoppingCart,
+  TrendingUp,
+  ArrowLeftRight,
+  Plus
 } from "lucide-react";
 
 const activities = [
@@ -88,13 +91,12 @@ export function ActivityDashboard() {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col">
           {/* Main Content */}
-          <div className="flex-1 flex overflow-hidden">
-            <div className="flex-1 overflow-y-auto p-6 pt-4">
+          <div className="flex-1 overflow-y-auto p-6 pt-4">
             {/* Page Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h1 className="text-3xl font-bold">Activity</h1>
-                <p className="text-muted-foreground">Recent transactions and marketplace activity</p>
+                <p className="text-muted-foreground">Track your NFT transactions and interactions</p>
               </div>
               <div className="flex items-center gap-3">
                 <Button variant="outline" size="sm">
@@ -108,130 +110,82 @@ export function ActivityDashboard() {
               </div>
             </div>
 
-            {/* Activity Types */}
-            <div className="flex gap-2 mb-8">
-              {activityTypes.map((type, index) => (
-                <Button
-                  key={index}
-                  variant={type === "All" ? "default" : "outline"}
-                  size="sm"
-                >
-                  {type}
-                </Button>
-              ))}
-            </div>
-
-            {/* Activity Feed */}
-            <Tabs defaultValue="recent" className="space-y-6">
+            {/* Activity Tabs */}
+            <Tabs defaultValue="all" className="space-y-6">
               <TabsList>
-                <TabsTrigger value="recent">Recent Activity</TabsTrigger>
-                <TabsTrigger value="transactions">My Transactions</TabsTrigger>
-                <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                <TabsTrigger value="all">All Activity</TabsTrigger>
+                <TabsTrigger value="purchases">Purchases</TabsTrigger>
+                <TabsTrigger value="sales">Sales</TabsTrigger>
+                <TabsTrigger value="transfers">Transfers</TabsTrigger>
+                <TabsTrigger value="mints">Mints</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="recent" className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recent Activity</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {activities.map((activity) => (
-                        <div key={activity.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                          <div className="flex items-center gap-4">
-                            <div className={`p-2 rounded-full ${
-                              activity.direction === "out" ? "bg-red-500/10 text-red-500" : "bg-green-500/10 text-green-500"
-                            }`}>
-                              {activity.direction === "out" ? (
-                                <ArrowUpRight className="h-4 w-4" />
-                              ) : (
-                                <ArrowDownLeft className="h-4 w-4" />
-                              )}
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-semibold">{activity.nft}</h3>
-                                <Badge variant="secondary" className="text-xs">
-                                  {activity.type.toUpperCase()}
-                                </Badge>
-                              </div>
-                              <p className="text-sm text-muted-foreground">
-                                {activity.from} → {activity.to}
-                              </p>
-                            </div>
+              <TabsContent value="all" className="space-y-6">
+                {/* Activity List */}
+                <div className="space-y-4">
+                  {activities.map((activity, index) => (
+                    <Card key={activity.id}>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center text-white">
+                            {activity.type === 'sale' && <TrendingUp className="h-6 w-6" />}
+                            {activity.type === 'transfer' && <ArrowLeftRight className="h-6 w-6" />}
+                            {activity.type === 'mint' && <Plus className="h-6 w-6" />}
                           </div>
-                          <div className="text-right">
-                            <div className="font-semibold">{activity.price}</div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Clock className="h-3 w-3" />
-                              {activity.time}
+                          
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className="font-semibold">{activity.nft}</h3>
+                              <Badge variant={activity.type === 'sale' ? 'secondary' : 'secondary'}>
+                                {activity.type.toUpperCase()}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">{activity.from} → {activity.to}</p>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                              <span>{activity.time}</span>
+                              <span>•</span>
+                              <span>{activity.price}</span>
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="transactions" className="space-y-6">
-                <div className="text-center py-12">
-                  <DollarSign className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">My Transactions</h3>
-                  <p className="text-muted-foreground">View your personal transaction history</p>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               </TabsContent>
 
-              <TabsContent value="analytics" className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-muted-foreground">Total Volume</p>
-                          <p className="text-2xl font-bold">456.7 BTC</p>
-                        </div>
-                        <div className="text-green-500">
-                          <ArrowUpRight className="h-8 w-8" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-muted-foreground">Total Sales</p>
-                          <p className="text-2xl font-bold">1,234</p>
-                        </div>
-                        <div className="text-blue-500">
-                          <DollarSign className="h-8 w-8" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-muted-foreground">Active Users</p>
-                          <p className="text-2xl font-bold">5,678</p>
-                        </div>
-                        <div className="text-purple-500">
-                          <Eye className="h-8 w-8" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+              <TabsContent value="purchases" className="space-y-6">
+                <div className="text-center py-12">
+                  <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Purchase History</h3>
+                  <p className="text-muted-foreground">Your NFT purchase transactions will appear here</p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="sales" className="space-y-6">
+                <div className="text-center py-12">
+                  <TrendingUp className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Sales History</h3>
+                  <p className="text-muted-foreground">Your NFT sales transactions will appear here</p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="transfers" className="space-y-6">
+                <div className="text-center py-12">
+                  <ArrowLeftRight className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Transfer History</h3>
+                  <p className="text-muted-foreground">Your NFT transfer transactions will appear here</p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="mints" className="space-y-6">
+                <div className="text-center py-12">
+                  <Plus className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Mint History</h3>
+                  <p className="text-muted-foreground">Your NFT mint transactions will appear here</p>
                 </div>
               </TabsContent>
             </Tabs>
-            </div>
-            
-            
-            <TrendingSidebar />
           </div>
           
           <Footer />

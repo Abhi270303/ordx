@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { 
   Sailboat, 
   Compass, 
@@ -12,15 +14,14 @@ import {
   ArrowLeftRight, 
   User, 
   FileText, 
-  Settings 
+  Settings,
+  Palette
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useRouter, usePathname } from "next/navigation";
 
 const navItems = [
   { icon: Compass, label: "Explore", path: "/", active: false },
   { icon: Grid, label: "Collections", path: "/collections", active: false },
-  { icon: Circle, label: "Stats", path: "/stats", active: false },
+  { icon: Palette, label: "Studio", path: "/studio", active: false },
   { icon: Calendar, label: "Activity", path: "/activity", active: false },
   { icon: List, label: "Watchlist", path: "/watchlist", active: false },
   { icon: Anchor, label: "Portfolio", path: "/portfolio", active: false },
